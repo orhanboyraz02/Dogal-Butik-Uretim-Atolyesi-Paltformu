@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Altın Doğal OS | Yüzdelik Formül Fabrikası</title>
+    <title> Doğal Butik Üretim Atölyesi OS | Yüzdelik Formül Fabrikası</title>
     <!-- Tailwind + Font Awesome + Chart.js -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -84,7 +84,7 @@
             <main class="flex-1 overflow-y-auto p-6 md:p-8">
                 <div class="flex justify-between items-center mb-6"><h1 id="dynamicTitle" class="text-3xl font-bold gold-text">% Formül Motoru</h1><div><span class="bg-gold/20 px-3 py-1 rounded-full text-sm"><i class="fas fa-chart-simple"></i> Aktif Oturum</span></div></div>
                 <div id="pageContent"></div>
-                <footer class="mt-12 pt-6 border-t border-[#D4AF37]/20 text-center text-sm footer-text"><p><i class="fas fa-copyright"></i> 2026 Altın Doğal Üretim ve Ticaret Sistemi | Gıda (Sirke, Macun, Çay, Kahve, Tentür, Propolis) | Kozmetik (Sabun, Parfüm, Krem, Şampuan) | Doğaltaş (Kolye, Bileklik, Tespih) | Tüm formüller yüzdelik bazlıdır.</p><p class="mt-1">📧 info@altindogal.com | +90 552 123 45 67 | İstanbul</p></footer>
+                <footer class="mt-12 pt-6 border-t border-[#D4AF37]/20 text-center text-sm footer-text"><p><i class="fas fa-copyright"></i> 2026 Altın Doğal Üretim ve Ticaret Sistemi | Gıda (Sirke, Macun, Çay, Kahve, Tentür, Propolis) | Kozmetik (Sabun, Parfüm, Krem, Şampuan) | Doğaltaş (Kolye, Bileklik, Tespih) | Tüm formüller yüzdelik bazlıdır.</p><p class="mt-1">📧 orhanboyraz0216@gmail.com | +90 541 866 0202 | Nilüfer/BURSA</p></footer>
             </main>
         </div>
     </div>
@@ -93,7 +93,7 @@
         // ---------- VERİTABANI (YÜZDELİK ZENGİN) ----------
         let currentUser = null;
         const DB_INIT = {
-            users: [{ email: "admin@natural.com", password: "admin123", name: "Üretim Müdürü", package: "Premium" }],
+            users: [{ email: "admin@natural.com", password: "admin123", name: "Üretim Müdürü: Orhan BOYRAZ", package: "Premium" }],
             products: [
                 // GIDA kategorisi - YÜZDELİK FORMÜLLER
                 { id: "g1", name: "Elma Sirkesi (Anne Kültür)", category: "gida", subcat: "sirke", composition: { elmaSuyu: 85, anaKultur: 10, su: 5 }, price: 89, cost: 28, stock: 120, usage: "Salata, detoks", warnings: "Asidik" },
@@ -107,7 +107,7 @@
                 { id: "k2", name: "Lavanta Esans Parfüm", category: "kozmetik", subcat: "parfum", composition: { lavanta: 40, sandal: 25, neroli: 20, alkol: 15 }, price: 299, cost: 120, stock: 40 },
                 { id: "k3", name: "Argan Yenileyici Krem", category: "kozmetik", subcat: "krem", composition: { argan: 30, shea: 25, aloe: 25, vitaminE: 20 }, price: 189, cost: 70, stock: 65 },
                 { id: "k4", name: "Isırganlı Şampuan", category: "kozmetik", subcat: "sampuan", composition: { ısırgan: 40, biberiye: 20, su: 30, gliserin: 10 }, price: 159, cost: 54, stock: 110 },
-                // DOĞAL TAŞ TAKI
+                // DOĞAL TAŞ & TAKI
                 { id: "t1", name: "Altın Kehribar Bileklik", category: "takı", subcat: "bileklik", composition: { kehribar: 90, ipek: 10 }, price: 349, cost: 140, stock: 38, tip: "bileklik" },
                 { id: "t2", name: "Yeşim Taşı Kolye", category: "takı", subcat: "kolye", composition: { yeşim: 95, gümüş: 5 }, price: 479, cost: 210, stock: 22, tip: "kolye" },
                 { id: "t3", name: "Sedef İnci Tespih", category: "takı", subcat: "tespih", composition: { sedef: 85, inci: 15 }, price: 599, cost: 280, stock: 15, tip: "tespih" },
