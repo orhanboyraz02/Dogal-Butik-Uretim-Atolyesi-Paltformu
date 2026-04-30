@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doğal Üretim SaaS Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<!-- LOGIN GATE -->
+<div id="loginPage" class="flex items-center justify-center h-screen">
+  <div class="bg-white p-6 rounded shadow w-96">
+    <h2 class="text-xl font-bold mb-4">SaaS Giriş</h2>
+    <input id="email" placeholder="E-posta" class="border p-2 w-full mb-2">
+    <input id="password" type="password" placeholder="Şifre" class="border p-2 w-full mb-2">
+    <button onclick="login()" class="bg-black text-white w-full py-2">Giriş Yap</button>
+    <p class="text-sm mt-2 text-gray-500">Demo: admin / 1234</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden flex">
+
+  <!-- SIDEBAR -->
+  <aside class="w-72 bg-gray-900 text-white min-h-screen p-4">
+    <h2 class="text-xl font-bold mb-6">Natural SaaS</h2>
+    <button class="block w-full text-left" onclick="show('dashboard')">Dashboard</button>
+    <button class="block w-full text-left" onclick="show('products')">Ürünler</button>
+    <button class="block w-full text-left" onclick="show('formulas')">Formüller</button>
+    <button class="block w-full text-left" onclick="show('ai')">AI Asistan</button>
+    <button class="block w-full text-left" onclick="show('billing')">Abonelik</button>
+    <button class="block w-full text-left text-red-300" onclick="logout()">Çıkış</button>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="flex-1 p-6">
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="page">
+      <h1 class="text-2xl font-bold">SaaS Kontrol Paneli</h1>
+      <div class="grid grid-cols-3 gap-4 mt-4">
+        <div class="bg-white p-4 shadow rounded">Kullanıcı: <span id="userRole"></span></div>
+        <div class="bg-white p-4 shadow rounded">Plan: <span id="plan"></span></div>
+        <div class="bg-white p-4 shadow rounded">Aktif Modüller: 5</div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="products" class="page hidden">
+      <h2 class="text-xl font-bold">Ürün Yönetimi</h2>
+      <input id="pname" class="border p-2 mt-2" placeholder="Ürün adı">
+      <input id="ptype" class="border p-2 mt-2" placeholder="Kategori">
+      <button onclick="addProduct()" class="bg-blue-600 text-white px-4 py-2 mt-2">Ekle</button>
+      <ul id="plist" class="mt-4"></ul>
+    </section>
+
+    <!-- FORMULAS -->
+    <section id="formulas" class="page hidden">
+      <h2 class="text-xl font-bold">Formül Motoru</h2>
+      <textarea id="ftext" class="border p-2 w-full mt-2" placeholder="AI destekli formül"></textarea>
+      <button onclick="addFormula()" class="bg-green-600 text-white px-4 py-2 mt-2">Kaydet</button>
+      <ul id="flist" class="mt-4"></ul>
+    </section>
+
+    <!-- AI -->
+    <section id="ai" class="page hidden">
+      <h2 class="text-xl font-bold">AI Asistan</h2>
+      <textarea id="aiInput" class="border p-2 w-full" placeholder="Örn: uykusuzluk için doğal çözüm"></textarea>
+      <button onclick="aiGenerate()" class="bg-purple-600 text-white px-4 py-2 mt-2">Üret</button>
+      <div id="aiOutput" class="mt-4 bg-white p-4 shadow"></div>
+    </section>
+
+    <!-- BILLING -->
+    <section id="billing" class="page hidden">
+      <h2 class="text-xl font-bold">Abonelik Sistemi</h2>
+      <div class="grid grid-cols-3 gap-4 mt-4">
+        <div class="bg-white p-4 shadow">
+          <h3>Free</h3>
+          <p>Temel modüller</p>
+        </div>
+        <div class="bg-white p-4 shadow">
+          <h3>Pro</h3>
+          <p>Formül + AI</p>
+        </div>
+        <div class="bg-white p-4 shadow">
+          <h3>Enterprise</h3>
+          <p>Tam sistem</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+let state = {
+  user: null,
+  plan: "Free",
+  products: [],
+  formulas: []
+};
+
+function login(){
+  const e = email.value;
+  const p = password.value;
+  if(e === "admin" && p === "1234"){
+    state.user = "Admin";
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    updateUI();
+  } else alert("Hatalı giriş");
+}
+
+function logout(){ location.reload(); }
+
+function show(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function addProduct(){
+  state.products.push({name:pname.value,type:ptype.value});
+  render();
+}
+
+function addFormula(){
+  state.formulas.push(ftext.value);
+  render();
+}
+
+function render(){
+  plist.innerHTML = state.products.map(p=>`<li>${p.name} (${p.type})</li>`).join('');
+  flist.innerHTML = state.formulas.map(f=>`<li>${f}</li>`).join('');
+}
+
+function updateUI(){
+  userRole.innerText = state.user;
+  plan.innerText = state.plan;
+}
+
+function aiGenerate(){
+  const input = aiInput.value;
+  aiOutput.innerHTML = "AI Analizi: " + input + " → Bitkisel çözüm önerisi oluşturuldu (mock)";
+}
+
+render();
+</script>
+
+</body>
+</html>
