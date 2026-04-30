@@ -3,43 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title> Doğal Butik Üretim Atölyesi OS | Yüzdelik Formül Fabrikası</title>
+    <title>Altın Doğal Market | Formül Hesaplayıcı + Satış</title>
     <!-- Tailwind + Font Awesome + Chart.js -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
-        body {
-            background: #0A0F2A;
-            color: #D4AF37;
-        }
+        body { background: #0A0F2A; color: #D4AF37; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #1A1F3A; }
         ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
         .card-gold {
             background: #0F1433;
-            border: 1px solid rgba(212, 175, 55, 0.35);
+            border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 24px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
             backdrop-filter: blur(2px);
         }
-        .gold-border { border-color: #D4AF37; }
-        .bg-gold { background-color: #D4AF37; color: #0A0F2A; }
-        .hover-gold:hover { background-color: #D4AF37; color: #0A0F2A; transition: 0.2s; }
-        .nav-active {
-            background: rgba(212, 175, 55, 0.2);
-            border-left: 3px solid #D4AF37;
-            color: #D4AF37 !important;
-        }
-        input, select, textarea {
-            background-color: #111833;
-            border: 1px solid #D4AF37;
-            color: #D4AF37;
-            border-radius: 14px;
-            padding: 8px 12px;
-        }
-        button.primary {
+        .btn-gold {
             background: #D4AF37;
             color: #0A0F2A;
             font-weight: bold;
@@ -47,179 +29,212 @@
             padding: 8px 20px;
             transition: 0.2s;
         }
-        button.primary:hover { opacity: 0.85; transform: scale(0.97); }
-        .gold-text { color: #D4AF37; }
+        .btn-gold:hover { opacity: 0.85; transform: scale(0.97); }
         .badge-percent { background: #D4AF3722; border-radius: 40px; padding: 2px 10px; font-size: 12px; }
-        .footer-text { color: #D4AF37CC; font-size: 12px; }
-        .ingredient-pill { display: inline-block; background: #1E2448; border-radius: 30px; padding: 4px 12px; margin: 3px; font-size: 12px; border-left: 2px solid #D4AF37; }
+        .ingredient-pill {
+            display: inline-block;
+            background: #1E2448;
+            border-radius: 30px;
+            padding: 4px 12px;
+            margin: 3px;
+            font-size: 12px;
+            border-left: 2px solid #D4AF37;
+        }
+        input, select {
+            background-color: #111833;
+            border: 1px solid #D4AF37;
+            color: #D4AF37;
+            border-radius: 14px;
+            padding: 8px 12px;
+        }
+        .nav-active {
+            background: rgba(212, 175, 55, 0.2);
+            border-left: 3px solid #D4AF37;
+            color: #D4AF37 !important;
+        }
+        .soap-result { background: #0D1230; border-radius: 20px; padding: 12px; margin-top: 12px; }
     </style>
 </head>
 <body>
-    <div id="app">
-        <!-- LOGIN -->
-        <div id="loginScreen" class="min-h-screen flex items-center justify-center p-6">
-            <div class="card-gold p-8 w-full max-w-md">
-                <div class="text-center mb-6"><i class="fas fa-crown text-4xl" style="color:#D4AF37"></i><h1 class="text-3xl font-bold mt-2">Altın Doğal OS</h1><p class="text-sm opacity-80">Yüzdelik Formül Üretim Sistemi</p></div>
-                <div class="space-y-4"><input type="text" id="loginEmail" placeholder="E-posta" class="w-full" value="admin@natural.com"><input type="password" id="loginPassword" placeholder="Şifre" value="admin123" class="w-full"><button onclick="authLogin()" class="primary w-full">🔐 Giriş Yap</button><p class="text-xs text-center">Demo: admin@natural.com / admin123 (Premium)</p></div>
-                <div class="mt-6 text-center text-xs footer-text"><i class="fas fa-percent"></i> Sirke · Macun · Sabun · Parfüm · Bileklik · Tespih</div>
-            </div>
-        </div>
 
-        <!-- MAIN DASHBOARD -->
-        <div id="dashboardApp" class="hidden flex h-screen overflow-hidden">
-            <aside class="w-80 bg-[#0B0F2A] border-r border-[#D4AF37]/30 flex flex-col overflow-y-auto">
-                <div class="p-6 flex items-center gap-3 border-b border-[#D4AF37]/30"><i class="fas fa-gem text-2xl" style="color:#D4AF37"></i><span class="font-bold text-xl">ALTIN<span style="color:#D4AF37">DOĞAL</span></span><span id="userPackageBadge" class="ml-auto text-xs bg-[#D4AF37]/20 px-2 py-1 rounded-full">Premium</span></div>
-                <nav class="flex-1 py-5 space-y-1 px-4">
-                    <a href="#" data-page="dashboard" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-chart-line"></i><span>Kontrol Paneli</span></a>
-                    <a href="#" data-page="formula_engine" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-percent"></i><span>📊 Yüzdelik Formüller</span></a>
-                    <a href="#" data-page="gida" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-apple-alt"></i><span>Gıda (Sirke/Macun/Çay/Kahve/Tentür/Propolis)</span></a>
-                    <a href="#" data-page="kozmetik" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-spa"></i><span>Kozmetik (Sabun/Parfüm/Krem/Şampuan)</span></a>
-                    <a href="#" data-page="takı" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-gem"></i><span>Doğaltaş Takı (Kolye/Bileklik/Tespih)</span></a>
-                    <a href="#" data-page="production" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-industry"></i><span>Batch & Üretim</span></a>
-                    <a href="#" data-page="sales" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-store"></i><span>Satış Marketi & WhatsApp</span></a>
-                    <a href="#" data-page="packages" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-crown"></i><span>Kullanıcı Paketleri</span></a>
-                </nav>
-                <div class="p-4 border-t border-[#D4AF37]/30 text-xs"><div class="flex justify-between mb-2"><span>👤 <span id="sidebarUserName">Admin</span></span><button onclick="logout()" class="text-amber-400"><i class="fas fa-sign-out-alt"></i> Çıkış</button></div><div class="footer-text text-center mt-2">© 2026 Butik Doğal Üretim Atölyesi OS | Yüzdelik Fabrika</div></div>
-            </aside>
-            <main class="flex-1 overflow-y-auto p-6 md:p-8">
-                <div class="flex justify-between items-center mb-6"><h1 id="dynamicTitle" class="text-3xl font-bold gold-text">% Formül Motoru</h1><div><span class="bg-gold/20 px-3 py-1 rounded-full text-sm"><i class="fas fa-chart-simple"></i> Aktif Oturum</span></div></div>
-                <div id="pageContent"></div>
-                <footer class="mt-12 pt-6 border-t border-[#D4AF37]/20 text-center text-sm footer-text"><p><i class="fas fa-copyright"></i> 2026 Altın Doğal Üretim ve Ticaret Sistemi | Gıda (Sirke, Macun, Çay, Kahve, Tentür, Propolis) | Kozmetik (Sabun, Parfüm, Krem, Şampuan) | Doğaltaş (Kolye, Bileklik, Tespih) | Tüm formüller yüzdelik bazlıdır.</p><p class="mt-1">📧 orhanboyraz0216@gmail.com | +90 541 866 0202 | Nilüfer/BURSA</p></footer>
-            </main>
+<div id="app">
+    <!-- LOGIN EKRANI -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-6">
+        <div class="card-gold p-8 w-full max-w-md">
+            <div class="text-center mb-6"><i class="fas fa-store text-4xl" style="color:#D4AF37"></i><h1 class="text-3xl font-bold mt-2">Altın Doğal Market</h1><p class="text-sm opacity-80">Formül Hesaplayıcı + Doğal Ürünler</p></div>
+            <div class="space-y-4">
+                <input type="text" id="loginEmail" placeholder="E-posta" class="w-full" value="admin@natural.com">
+                <input type="password" id="loginPassword" placeholder="Şifre" value="admin123" class="w-full">
+                <button onclick="authLogin()" class="btn-gold w-full">🔐 Giriş Yap / Marketi Keşfet</button>
+                <p class="text-xs text-center">Demo: admin@natural.com / admin123 (Premium)</p>
+            </div>
+            <div class="mt-6 text-center text-xs opacity-70"><i class="fas fa-percent"></i> Sabun · Sirke · Tentür · Bileklik · Tespih</div>
         </div>
     </div>
 
-    <script>
-        // ---------- VERİTABANI (YÜZDELİK ZENGİN) ----------
-        let currentUser = null;
-        const DB_INIT = {
-            users: [{ email: "admin@natural.com", password: "admin123", name: "Üretim Müdürü: Orhan BOYRAZ", package: "Premium" }],
-            products: [
-                // GIDA kategorisi - YÜZDELİK FORMÜLLER
-                { id: "g1", name: "Elma Sirkesi (Anne Kültür)", category: "gida", subcat: "sirke", composition: { elmaSuyu: 85, anaKultur: 10, su: 5 }, price: 89, cost: 28, stock: 120, usage: "Salata, detoks", warnings: "Asidik" },
-                { id: "g2", name: "Keçiboynuzu Macunu", category: "gida", subcat: "macun", composition: { keçiboynuzu: 70, bal: 20, ceviz: 10 }, price: 149, cost: 55, stock: 80 },
-                { id: "g3", name: "Adaçayı Fermente Çayı", category: "gida", subcat: "cay", composition: { adaçayı: 60, kekik: 20, rezene: 20 }, price: 79, cost: 22, stock: 200 },
-                { id: "g4", name: "Dağ Kahvesi (Kavrulmamış)", category: "gida", subcat: "kahve", composition: { arabica: 70, robusta: 30 }, price: 199, cost: 85, stock: 45 },
-                { id: "g5", name: "Propolis Tentür (Etkin)", category: "gida", subcat: "tentür", composition: { propolis: 35, etanol: 55, su: 10 }, price: 249, cost: 110, stock: 32 },
-                { id: "g6", name: "Ham Propolis Reçinesi", category: "gida", subcat: "propolis", composition: { propolisHam: 100 }, price: 189, cost: 78, stock: 28 },
-                // KOZMETİK - yüzdelik
-                { id: "k1", name: "Zeytinyağlı Doğal Sabun", category: "kozmetik", subcat: "sabun", composition: { zeytinyagi: 65, defne: 20, su: 15 }, price: 129, cost: 45, stock: 95 },
-                { id: "k2", name: "Lavanta Esans Parfüm", category: "kozmetik", subcat: "parfum", composition: { lavanta: 40, sandal: 25, neroli: 20, alkol: 15 }, price: 299, cost: 120, stock: 40 },
-                { id: "k3", name: "Argan Yenileyici Krem", category: "kozmetik", subcat: "krem", composition: { argan: 30, shea: 25, aloe: 25, vitaminE: 20 }, price: 189, cost: 70, stock: 65 },
-                { id: "k4", name: "Isırganlı Şampuan", category: "kozmetik", subcat: "sampuan", composition: { ısırgan: 40, biberiye: 20, su: 30, gliserin: 10 }, price: 159, cost: 54, stock: 110 },
-                // DOĞAL TAŞ & TAKI
-                { id: "t1", name: "Altın Kehribar Bileklik", category: "takı", subcat: "bileklik", composition: { kehribar: 90, ipek: 10 }, price: 349, cost: 140, stock: 38, tip: "bileklik" },
-                { id: "t2", name: "Yeşim Taşı Kolye", category: "takı", subcat: "kolye", composition: { yeşim: 95, gümüş: 5 }, price: 479, cost: 210, stock: 22, tip: "kolye" },
-                { id: "t3", name: "Sedef İnci Tespih", category: "takı", subcat: "tespih", composition: { sedef: 85, inci: 15 }, price: 599, cost: 280, stock: 15, tip: "tespih" },
-                { id: "t4", name: "Obsidyen Kristal Tespih", category: "takı", subcat: "tespih", composition: { obsidyen: 100 }, price: 399, cost: 175, stock: 27 }
-            ],
-            formulations: [],
-            batches: [],
-            orders: []
-        };
-        function initStorage() {
-            if(!localStorage.getItem("altin_products")) localStorage.setItem("altin_products", JSON.stringify(DB_INIT.products));
-            if(!localStorage.getItem("altin_users")) localStorage.setItem("altin_users", JSON.stringify(DB_INIT.users));
-            if(!localStorage.getItem("altin_batches")) localStorage.setItem("altin_batches", JSON.stringify([]));
-            if(!localStorage.getItem("altin_orders")) localStorage.setItem("altin_orders", JSON.stringify([{ id:"ORD1", productName:"Elma Sirkesi", qty:2, total:178, status:"completed", date:"2026-04-01"},{ id:"ORD2", productName:"Kehribar Bileklik", qty:1, total:349, status:"pending"}]));
+    <!-- ANA PANEL -->
+    <div id="dashboardApp" class="hidden flex h-screen overflow-hidden">
+        <!-- SIDEBAR -->
+        <aside class="w-80 bg-[#0B0F2A] border-r border-[#D4AF37]/30 flex flex-col overflow-y-auto">
+            <div class="p-6 flex items-center gap-3 border-b border-[#D4AF37]/30">
+                <i class="fas fa-gem text-2xl" style="color:#D4AF37"></i>
+                <span class="font-bold text-xl">ALTIN<span style="color:#D4AF37">DOĞAL</span></span>
+                <span id="userPackageBadge" class="ml-auto text-xs bg-[#D4AF37]/20 px-2 py-1 rounded-full">Premium</span>
+            </div>
+            <nav class="flex-1 py-5 space-y-1 px-4">
+                <a href="#" data-page="market" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-store"></i><span>🛒 Doğal Market</span></a>
+                <a href="#" data-page="calculator" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-calculator"></i><span>🧪 Formül Hesaplayıcı (SoapCalc)</span></a>
+                <a href="#" data-page="gida" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-apple-alt"></i><span>🍯 Gıda Reçeteleri</span></a>
+                <a href="#" data-page="kozmetik" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-spa"></i><span>🌸 Kozmetik & Sabun</span></a>
+                <a href="#" data-page="takı" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-gem"></i><span>💎 Doğal Taş Takı</span></a>
+                <a href="#" data-page="packages" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-crown"></i><span>👑 Kullanıcı Paketleri</span></a>
+            </nav>
+            <div class="p-4 border-t border-[#D4AF37]/30 text-xs">
+                <div class="flex justify-between mb-2"><span>👤 <span id="sidebarUserName">Admin</span></span><button onclick="logout()" class="text-amber-400"><i class="fas fa-sign-out-alt"></i> Çıkış</button></div>
+                <div class="text-center mt-2 opacity-70">© 2026 Altın Doğal Market<br>📧 info@altindogal.com | +90 552 123 45 67</div>
+            </div>
+        </aside>
+
+        <!-- MAIN İÇERİK -->
+        <main class="flex-1 overflow-y-auto p-6 md:p-8">
+            <div class="flex justify-between items-center mb-6"><h1 id="dynamicTitle" class="text-3xl font-bold gold-text">Doğal Market</h1><div><span class="bg-gold/20 px-3 py-1 rounded-full text-sm"><i class="fas fa-chart-simple"></i> Hoşgeldiniz</span></div></div>
+            <div id="pageContent"></div>
+            <footer class="mt-12 pt-6 border-t border-[#D4AF37]/20 text-center text-sm opacity-70">
+                <p><i class="fas fa-copyright"></i> 2026 Altın Doğal Üretim ve Ticaret Sistemi | Gıda (Sirke, Macun, Tentür, Propolis) | Kozmetik (Sabun, Krem, Şampuan, Parfüm) | Doğaltaş (Kolye, Bileklik, Tespih) | Tüm formüller yüzdelik bazlıdır.</p>
+                <p class="mt-1">🔬 SoapCalc mantığı ile hassas hesaplama | 🌿 %100 doğal içerikler</p>
+            </footer>
+        </main>
+    </div>
+</div>
+
+<script>
+    // ---------- VERİTABANI (Ürünler + Kullanıcı) ----------
+    let currentUser = null;
+    const DB_INIT = {
+        users: [{ email: "admin@natural.com", password: "admin123", name: "Üretim Uzmanı", package: "Premium" }],
+        products: [
+            // KOZMETİK (Sabun vb)
+            { id: "k1", name: "Zeytinyağlı Doğal Sabun", category: "kozmetik", subcat: "sabun", composition: { zeytinyagi: 80, hindistancevizi: 15, hintyagi: 5 }, price: 129, cost: 45, stock: 95, sapNaoh: 0.134 },
+            { id: "k2", name: "Lavanta Kremi (Yüz)", category: "kozmetik", subcat: "krem", composition: { lavanta: 15, shea: 30, aloe: 55 }, price: 189, cost: 78, stock: 42 },
+            { id: "k3", name: "Biberiye Şampuan", category: "kozmetik", subcat: "sampuan", composition: { biberiye: 25, ısırgan: 35, su: 40 }, price: 159, stock: 68 },
+            // GIDA
+            { id: "g1", name: "Elma Sirkesi (Anaçlı)", category: "gida", subcat: "sirke", composition: { elmaSuyu: 85, anaKultur: 10, su: 5 }, price: 89, stock: 120, asitlik: 5.5 },
+            { id: "g2", name: "Keçiboynuzu Macunu", category: "gida", subcat: "macun", composition: { keçiboynuzu: 70, bal: 20, ceviz: 10 }, price: 149, stock: 80 },
+            { id: "g3", name: "Propolis Tentür (30ml)", category: "gida", subcat: "tentür", composition: { propolis: 35, etanol: 55, su: 10 }, price: 249, stock: 33 },
+            { id: "g4", name: "Dağ Çayı (Fermente)", category: "gida", subcat: "cay", composition: { adaçayı: 60, kekik: 40 }, price: 79, stock: 200 },
+            // DOĞAL TAŞ TAKI
+            { id: "t1", name: "Kehribar Bileklik", category: "takı", subcat: "bileklik", composition: { kehribar: 90, ipek: 10 }, price: 349, stock: 38 },
+            { id: "t2", name: "Yeşim Kolye", category: "takı", subcat: "kolye", composition: { yeşim: 95, gümüş: 5 }, price: 479, stock: 22 },
+            { id: "t3", name: "Sedef Tespih", category: "takı", subcat: "tespih", composition: { sedef: 85, inci: 15 }, price: 599, stock: 15 }
+        ],
+        orders: [{ id:"ORD1", productName:"Elma Sirkesi", qty:2, total:178, status:"pending", date:"2026-04-07" }]
+    };
+    function initStorage() {
+        if(!localStorage.getItem("market_products")) localStorage.setItem("market_products", JSON.stringify(DB_INIT.products));
+        if(!localStorage.getItem("market_users")) localStorage.setItem("market_users", JSON.stringify(DB_INIT.users));
+        if(!localStorage.getItem("market_orders")) localStorage.setItem("market_orders", JSON.stringify(DB_INIT.orders));
+    }
+    function getProducts() { return JSON.parse(localStorage.getItem("market_products")); }
+    function getOrders() { return JSON.parse(localStorage.getItem("market_orders")||"[]"); }
+    function saveOrders(o) { localStorage.setItem("market_orders", JSON.stringify(o)); }
+
+    // Auth
+    window.authLogin = function() {
+        const email = document.getElementById("loginEmail").value;
+        const pwd = document.getElementById("loginPassword").value;
+        const users = JSON.parse(localStorage.getItem("market_users"));
+        const user = users.find(u=>u.email===email && u.password===pwd);
+        if(user){ currentUser=user; localStorage.setItem("activeMarketUser",JSON.stringify(user)); document.getElementById("loginScreen").classList.add("hidden"); document.getElementById("dashboardApp").classList.remove("hidden"); document.getElementById("sidebarUserName").innerText=user.name; document.getElementById("userPackageBadge").innerHTML=user.package; loadPage("market"); } else alert("Giriş başarısız. admin@natural.com / admin123");
+    };
+    window.logout = function(){ localStorage.removeItem("activeMarketUser"); document.getElementById("dashboardApp").classList.add("hidden"); document.getElementById("loginScreen").classList.remove("hidden"); currentUser=null; };
+    function checkAutoLogin(){ const saved=localStorage.getItem("activeMarketUser"); if(saved){ currentUser=JSON.parse(saved); document.getElementById("loginScreen").classList.add("hidden"); document.getElementById("dashboardApp").classList.remove("hidden"); document.getElementById("sidebarUserName").innerText=currentUser.name; document.getElementById("userPackageBadge").innerHTML=currentUser.package; loadPage("market"); } }
+
+    // ---------- SAYFALAR ----------
+    // MARKET (Ana Satış)
+    function renderMarket() {
+        const products = getProducts();
+        return `<div class="card-gold p-6"><h2 class="text-2xl font-bold mb-4"><i class="fas fa-leaf"></i> Doğal Ürün Marketi</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-5">${products.map(p=>`<div class="bg-[#0A0F2A] border border-gold/40 p-4 rounded-2xl"><h3 class="text-xl gold-text">${p.name}</h3><p class="text-sm opacity-80">${p.subcat || p.category}</p><div class="mt-2 flex flex-wrap">${Object.entries(p.composition).slice(0,2).map(([k,v])=>`<span class="ingredient-pill">%${v} ${k}</span>`).join('')}</div><div class="flex justify-between items-center mt-3"><span class="text-gold text-xl">₺${p.price}</span><button onclick="addToCart('${p.name}',${p.price})" class="btn-gold text-sm px-3 py-1"><i class="fas fa-cart-plus"></i> Sepet</button></div></div>`).join('')}</div><div class="mt-6"><button onclick="viewCart()" class="btn-gold w-full md:w-auto"><i class="fab fa-whatsapp"></i> Sepeti WhatsApp ile Siparişe Dönüştür</button></div></div>`;
+    }
+    // SOAPCALC TARZI HESAPLAYICI
+    function renderCalculator() {
+        return `<div class="card-gold p-6"><h2 class="text-2xl font-bold">🧼 Sabun / Kozmetik Formül Hesaplayıcı (SoapCalc Mantığı)</h2>
+        <p class="mb-4">Yağların SAP değerlerine göre NaOH ve su miktarını hesaplar.</p>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div><label class="block">Toplam Yağ (gram):</label><input type="number" id="oilWeight" value="500" class="w-full"><label class="block mt-2">Süper Yağ (%) :</label><input type="number" id="superfat" value="5" class="w-full"><label class="block mt-2">Su Yüzdesi (Yağa göre):</label><input type="number" id="waterPercent" value="38" class="w-full"></div>
+            <div><label class="block">Yağları Seç ve miktar (gram):</label>
+            <select id="oilSelect" class="w-full"><option value="zeytinyagi">Zeytinyağı (SAP:0.134)</option><option value="hindistancevizi">Hindistancevizi (SAP:0.183)</option><option value="palm">Palmiye (SAP:0.141)</option><option value="shea">Shea (SAP:0.128)</option></select>
+            <div class="flex gap-2 mt-2"><input type="number" id="oilAmount" placeholder="gram" class="w-full"><button onclick="addOilToRecipe()" class="btn-gold text-sm px-3 py-1">Ekle</button></div>
+            <div id="recipeOilsList" class="mt-3 text-sm bg-[#111833] p-2 rounded-xl"></div></div>
+        </div>
+        <div id="calcResult" class="soap-result mt-4 text-center">Henüz hesaplama yapılmadı. Yağ ekleyip "Hesapla"ya tıklayın.</div>
+        <button onclick="calculateSoap()" class="btn-gold mt-4 w-full">🧪 NaOH ve Su Hesapla</button>
+        </div>`;
+    }
+    let tempRecipe = [];
+    window.addOilToRecipe = function() {
+        const select = document.getElementById("oilSelect");
+        const oilName = select.options[select.selectedIndex]?.text.split(" ")[0];
+        const amount = parseFloat(document.getElementById("oilAmount").value);
+        if(isNaN(amount) || amount<=0) return alert("Geçerli miktar girin");
+        let sap = 0.134;
+        if(select.value==="zeytinyagi") sap=0.134;
+        if(select.value==="hindistancevizi") sap=0.183;
+        if(select.value==="palm") sap=0.141;
+        if(select.value==="shea") sap=0.128;
+        tempRecipe.push({ name: oilName, weight: amount, sap });
+        document.getElementById("recipeOilsList").innerHTML = tempRecipe.map(o=>`<div>${o.name}: ${o.weight}gr (SAP:${o.sap})</div>`).join('');
+        document.getElementById("oilAmount").value = '';
+    };
+    window.calculateSoap = function() {
+        if(tempRecipe.length===0) { alert("Lütfen en az bir yağ ekleyin"); return; }
+        const totalOil = tempRecipe.reduce((sum,o)=>sum+o.weight,0);
+        let requiredNaOH = tempRecipe.reduce((sum,o)=>sum + (o.weight * o.sap),0);
+        const superfat = parseFloat(document.getElementById("superfat").value) || 5;
+        const finalLye = requiredNaOH * (1 - superfat/100);
+        const waterPercent = parseFloat(document.getElementById("waterPercent").value) || 38;
+        const water = totalOil * (waterPercent/100);
+        document.getElementById("calcResult").innerHTML = `<strong>📊 Sonuç (SoapCalc stili):</strong><br>Toplam Yağ: ${totalOil.toFixed(0)} gr<br>NaOH: ${finalLye.toFixed(2)} gram<br>Su: ${water.toFixed(2)} ml (yağa göre %${waterPercent})<br>Süper Yağ: %${superfat}<br>Not: Sabun sertliği için ortalama değerler idealdir.`;
+    };
+    // GIDA SAYFASI (Sirke, tentür vb hesaplama)
+    function renderGida() {
+        return `<div class="card-gold p-6"><h2 class="text-2xl font-bold">🍎 Gıda Reçete Hesaplayıcı (Sirke / Tentür / Fermente)</h2>
+        <div class="grid md:grid-cols-2 gap-6"><div><label>Ürün Tipi:</label><select id="gidaTipi" class="w-full"><option value="sirke">Sirke (Asitlik Hesaplama)</option><option value="tentür">Tentür (Bitki/Alkol Oranı)</option><option value="macun">Macun / Reçel</option></select><label class="mt-2">Hedef Hacim (ml / gr):</label><input type="number" id="hedefHacim" value="1000" class="w-full"></div>
+        <div id="gidaDynamicInputs">Sirke Asitlik Oranı (%): <input type="number" id="asitlik" value="5" class="w-full"></div></div>
+        <button onclick="calculateFood()" class="btn-gold mt-4">🌿 Gıda Formülünü Hesapla</button><div id="foodResult" class="soap-result mt-3"></div>
+        <div class="mt-6"><h3>⭐ Hazır Gıda Ürünleri (Sepete ekle)</h3><div class="grid grid-cols-2 gap-2 mt-2">${getProducts().filter(p=>p.category==="gida").map(p=>`<button onclick="addToCart('${p.name}',${p.price})" class="bg-gold/20 p-2 rounded-xl text-sm">${p.name} - ₺${p.price}</button>`).join('')}</div></div></div>`;
+    }
+    window.calculateFood = function() {
+        const tip = document.getElementById("gidaTipi").value;
+        const hacim = parseFloat(document.getElementById("hedefHacim").value);
+        if(tip==="sirke") {
+            const asit = parseFloat(document.getElementById("asitlik").value);
+            document.getElementById("foodResult").innerHTML = `🍏 ${hacim} ml Sirke için: Asitlik %${asit} hedefleniyor. Kullanılacak anaç sirke miktarı: ~${(asit*10).toFixed(0)} ml, su ile tamamlanır. Fermantasyon 3-4 hafta.`;
+        } else if(tip==="tentür") {
+            document.getElementById("foodResult").innerHTML = `🌿 ${hacim} ml Tentür için: Bitki/Alkol oranı 1:5 → ${(hacim/6).toFixed(0)} gr bitki, ${(hacim*5/6).toFixed(0)} ml %70 alkol. 4 hafta beklet.`;
+        } else {
+            document.getElementById("foodResult").innerHTML = `🍯 ${hacim} gr Macun için: %70 meyve püresi, %20 bal, %10 ceviz/fındık. Karıştırıp kaynatın.`;
         }
-        function getProducts() { return JSON.parse(localStorage.getItem("altin_products")); }
-        function getOrders() { return JSON.parse(localStorage.getItem("altin_orders")||"[]"); }
-        function saveProducts(p) { localStorage.setItem("altin_products", JSON.stringify(p)); }
-        function saveOrders(o) { localStorage.setItem("altin_orders", JSON.stringify(o)); }
-
-        // Auth
-        window.authLogin = function() {
-            const email = document.getElementById("loginEmail").value;
-            const pwd = document.getElementById("loginPassword").value;
-            const users = JSON.parse(localStorage.getItem("altin_users"));
-            const user = users.find(u=>u.email===email && u.password===pwd);
-            if(user){ currentUser=user; localStorage.setItem("activeAltinUser",JSON.stringify(user)); document.getElementById("loginScreen").classList.add("hidden"); document.getElementById("dashboardApp").classList.remove("hidden"); document.getElementById("sidebarUserName").innerText=user.name; document.getElementById("userPackageBadge").innerHTML=user.package; loadPage("formula_engine"); } else alert("Giriş başarısız. admin@natural.com / admin123");
-        };
-        window.logout = function(){ localStorage.removeItem("activeAltinUser"); document.getElementById("dashboardApp").classList.add("hidden"); document.getElementById("loginScreen").classList.remove("hidden"); currentUser=null; };
-        function checkAutoLogin(){ const saved=localStorage.getItem("activeAltinUser"); if(saved){ currentUser=JSON.parse(saved); document.getElementById("loginScreen").classList.add("hidden"); document.getElementById("dashboardApp").classList.remove("hidden"); document.getElementById("sidebarUserName").innerText=currentUser.name; document.getElementById("userPackageBadge").innerHTML=currentUser.package; loadPage("formula_engine"); } }
-
-        // ------------------- RENDER PAGES (YÜZDELİK VURGULU) -------------------
-        function renderFormulaEngine() {
-            const all = getProducts();
-            return `<div class="card-gold p-6"><h2 class="text-2xl font-bold mb-2"><i class="fas fa-percent"></i> % Yüzdelik Formül Motoru</h2><p class="mb-5">Tüm ürünler yüzdelik kompozisyonla üretilir. Batch ölçeklendirme ve maliyet otomatik hesaplanır.</p>
-            <div class="grid md:grid-cols-2 gap-5">${all.slice(0,8).map(p=>`<div class="border border-gold/30 p-4 rounded-2xl bg-[#0D1230]"><div class="flex justify-between"><span class="font-bold">${p.name}</span><span class="badge-percent">% bazlı</span></div><div class="mt-2 flex flex-wrap">${Object.entries(p.composition).map(([ing,perc])=>`<span class="ingredient-pill">${ing}: %${perc}</span>`).join('')}</div><div class="mt-2 text-sm">💰 Maliyet: ₺${p.cost} | Satış: ₺${p.price} | Marj: ${Math.round(((p.price-p.cost)/p.price)*100)}%</div><button onclick="scaleFormulaExample('${p.id}')" class="text-xs mt-2 bg-gold/20 px-3 py-1 rounded-full">Ölçeklendir (100gr → 5kg)</button></div>`).join('')}</div>
-            <div class="mt-5 bg-gold/10 p-4 rounded-xl"><i class="fas fa-chart-line"></i> Örnek: Sirke %85 elma suyu + %10 ana kültür → 10L için 8.5L elma suyu, 1L kültür. Tüm formüller otomatik çalışır.</div></div>`;
-        }
-
-        function renderGida() {
-            const prods = getProducts().filter(p=>p.category==="gida");
-            return `<div class="card-gold p-6"><h2 class="text-2xl font-bold">🍎 Gıda Ürünleri (Sirke, Macun, Çay, Kahve, Tentür, Propolis)</h2><div class="grid lg:grid-cols-2 gap-5 mt-5">${prods.map(p=>`<div class="bg-[#0A0F2A] border border-gold/40 p-5 rounded-2xl"><h3 class="text-xl gold-text">${p.name}</h3><div class="mt-2"><strong>% Kompozisyon:</strong> ${Object.entries(p.composition).map(([k,v])=>`${k} ${v}%`).join(' · ')}</div><div class="grid grid-cols-2 gap-2 mt-3 text-sm"><span>Fiyat: ₺${p.price}</span><span>Stok: ${p.stock}</span><span>Kullanım: ${p.usage||"Günlük"}</span><span>Uyarı: ${p.warnings||"Doğal"}</span></div><button onclick="quickOrder('${p.name}',${p.price})" class="primary text-xs mt-3 px-3 py-1"><i class="fab fa-whatsapp"></i> Sipariş Ver</button></div>`).join('')}</div></div>`;
-        }
-
-        function renderKozmetik() {
-            const prods = getProducts().filter(p=>p.category==="kozmetik");
-            return `<div class="card-gold p-6"><h2 class="text-2xl font-bold">🌸 Kozmetik Yüzdelik Formüller (Sabun, Parfüm, Krem, Şampuan)</h2><div class="grid lg:grid-cols-2 gap-5 mt-5">${prods.map(p=>`<div class="bg-[#0A0F2A] border border-gold/40 p-5 rounded-2xl"><h3 class="text-xl gold-text">${p.name}</h3><div><i class="fas fa-percent"></i> Reçete: ${Object.entries(p.composition).map(([k,v])=>`${k}:%${v}`).join(' | ')}</div><div class="flex gap-3 mt-2">₺${p.price} | Stok: ${p.stock}</div><button onclick="quickOrder('${p.name}',${p.price})" class="primary text-xs mt-2">WhatsApp Satış</button><button onclick="alert('Sabun formülü %65 zeytinyağı + %20 defne sabunu yüzdelik bazlı soğuk proses ile üretilir.')" class="text-xs ml-2 border px-2 py-1 rounded">% Detay</button></div>`).join('')}</div></div>`;
-        }
-
-        function renderTaki() {
-            const prods = getProducts().filter(p=>p.category==="takı");
-            return `<div class="card-gold p-6"><h2 class="text-2xl font-bold">💎 Doğaltaş Takı Koleksiyonu (Kolye, Bileklik, Tespih)</h2><div class="grid md:grid-cols-3 gap-5 mt-6">${prods.map(p=>`<div class="text-center bg-gradient-to-br from-[#0F1433] to-[#0A0F2A] p-5 rounded-2xl border border-gold/40"><i class="fas fa-gem text-3xl mb-2"></i><h3 class="text-xl font-bold">${p.name}</h3><p class="text-sm">${p.subcat}</p><div class="my-2"><span class="badge-percent">${Object.entries(p.composition)[0][0]}: ${Object.values(p.composition)[0]}%</span></div><div class="text-gold">₺${p.price}</div><button onclick="quickOrder('${p.name}',${p.price})" class="primary text-xs px-4 py-1 mt-3"><i class="fab fa-whatsapp"></i> Sipariş</button></div>`).join('')}</div>
-            <div class="mt-5 p-4 bg-gold/10 rounded-xl"><i class="fas fa-ruler-combined"></i> Yüzdelik taş işçiliği: Kehribar Bileklik %90 Kehribar + %10 İpek iplik; Tespihlerde sedef yüzdesi standartlarına uygun.</div></div>`;
-        }
-
-        function renderProduction() {
-            let batches = JSON.parse(localStorage.getItem("altin_batches")||"[]");
-            if(batches.length===0) batches = [{ id:"BATCH-1001", productId:"g1", productName:"Elma Sirkesi", date:"2026-04-05", expiry:"2028-04-05", quantity:50, status:"active" }];
-            return `<div class="card-gold p-6"><div class="flex justify-between"><h2 class="text-2xl">🏭 Batch & Lot Üretimi</h2><button onclick="createBatch()" class="primary text-sm">+ Yeni Batch (Otomatik %)</button></div><table class="w-full mt-4"><thead><tr class="border-b border-gold/30"><th>Lot No</th><th>Ürün</th><th>Tarih</th><th>Miktar</th><th>Durum</th><th>% Kontrol</th></tr></thead><tbody>${batches.map(b=>`<tr><td class="p-2">${b.id}</td><td>${b.productName}</td><td>${b.date}</td><td>${b.quantity}</td><td><span class="text-xs bg-gold/20 p-1 rounded">${b.status}</span></td><td><button onclick="alert('Bu batch, ürünün yüzdelik tarifine göre otomatik hammadde hesaplar: örn Sirke %85 elma suyu kullanır.')" class="text-gold"><i class="fas fa-percent"></i></button></td></tr>`).join('')}</tbody></table></div>`;
-        }
-
-        function renderSales() {
-            const products = getProducts();
-            const orders = getOrders();
-            return `<div class="card-gold p-6"><h2 class="text-2xl">🛒 Doğal Satış Marketi (Sirke, Sabun, Tespih, Bileklik)</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-3 my-5">${products.slice(0,8).map(p=>`<div class="bg-[#111833] p-3 rounded-xl text-center"><p class="font-bold text-sm">${p.name}</p><p class="text-gold">₺${p.price}</p><button onclick="quickOrder('${p.name}',${p.price})" class="text-xs bg-gold/20 px-2 py-1 rounded-full w-full mt-1"><i class="fab fa-whatsapp"></i> Sipariş</button></div>`).join('')}</div><h3>📋 Son Siparişler</h3><ul>${orders.map(o=>`<li class="border-b py-1">${o.productName} - ${o.qty} adet - TOPLAM: ₺${o.total} (${o.status})</li>`).join('')}</ul></div>`;
-        }
-
-        function renderPackages() {
-            return `<div class="card-gold p-6"><h2 class="text-2xl mb-4">👑 Kullanıcı Paketleri (Free / Pro / Premium)</h2><div class="grid md:grid-cols-3 gap-5"><div class="p-5 border border-gold/40 rounded-2xl text-center"><h3>🆓 Free</h3><p>Temel % formül, 10 ürün limiti</p><p>₺0</p>${currentUser.package==='Free'?'<span class="badge-percent">Aktif</span>':'<button class="primary text-xs mt-2">Satın Al</button>'}</div><div class="p-5 border border-gold/40 rounded-2xl text-center"><h3>🚀 Pro</h3><p>Sınırsız yüzdelik ürün, batch ihracat</p><p>₺299/ay</p>${currentUser.package==='Pro'?'<span class="badge-percent">Aktif</span>':'<button class="primary text-xs mt-2">Yükselt</button>'}</div><div class="p-5 bg-gold/20 rounded-2xl text-center border-2 border-gold"><h3>💎 Premium</h3><p>Pro + AI Formül + API + Regülasyon Raporu</p><p>₺599/ay</p><span class="badge-percent bg-gold text-black">✨ Mevcut Paketiniz</span></div></div></div>`;
-        }
-
-        // helpers
-        window.scaleFormulaExample = function(prodId) {
-            const prod = getProducts().find(p=>p.id===prodId);
-            if(prod){
-                let msg = `📐 Ölçeklendirme: 100 gram reçete → 5000 gram (5kg)\n`;
-                for(let [ing,perc] of Object.entries(prod.composition)){
-                    let scaled = (perc * 5000)/100;
-                    msg += `${ing}: ${scaled}gr (${perc}%)\n`;
-                }
-                alert(msg);
-            } else alert("formül bulunamadı");
-        };
-        window.createBatch = function() {
-            const batches = JSON.parse(localStorage.getItem("altin_batches")||"[]");
-            const products = getProducts();
-            const sampleProd = products[0];
-            const newBatch = { id:"BATCH-"+Date.now(), productId:sampleProd.id, productName:sampleProd.name, date:new Date().toISOString().slice(0,10), expiry:"2028-01-01", quantity:Math.floor(Math.random()*100)+20, status:"active" };
-            batches.push(newBatch);
-            localStorage.setItem("altin_batches", JSON.stringify(batches));
-            loadPage("production");
-        };
-        window.quickOrder = function(name,price) {
-            let orders = getOrders();
-            orders.push({ id:"ORD"+Date.now(), productName:name, qty:1, total:price, status:"pending", date:new Date().toISOString().slice(0,10) });
-            saveOrders(orders);
-            alert(`${name} sepete eklendi! WhatsApp sipariş için yönlendiriliyorsunuz.`);
-            loadPage("sales");
-        };
-        // Nav logic
-        const renderMap = { dashboard: renderFormulaEngine, formula_engine: renderFormulaEngine, gida: renderGida, kozmetik: renderKozmetik, takı: renderTaki, production: renderProduction, sales: renderSales, packages: renderPackages };
-        window.loadPage = function(page) {
-            if(renderMap[page]) {
-                document.getElementById("pageContent").innerHTML = renderMap[page]();
-                document.getElementById("dynamicTitle").innerHTML = document.querySelector(`a[data-page="${page}"] span`)?.innerText || "Yüzdelik Motor";
-            } else { document.getElementById("pageContent").innerHTML = renderFormulaEngine(); }
-        };
-        document.querySelectorAll(".nav-side").forEach(link=>{
-            link.addEventListener("click",(e)=>{ e.preventDefault(); const pg = link.getAttribute("data-page"); if(pg) loadPage(pg); document.querySelectorAll(".nav-side").forEach(l=>l.classList.remove("nav-active")); link.classList.add("nav-active"); });
-        });
-        initStorage();
-        checkAutoLogin();
-    </script>
+    };
+    function renderKozmetik() { const prods = getProducts().filter(p=>p.category==="kozmetik"); return `<div class="card-gold p-6"><h2 class="text-2xl mb-3">🌸 Kozmetik & Sabun Ürünleri</h2><div class="grid md:grid-cols-3 gap-4">${prods.map(p=>`<div class="border border-gold/40 p-4 rounded-xl"><h3>${p.name}</h3><p>₺${p.price}</p><button onclick="addToCart('${p.name}',${p.price})" class="btn-gold text-xs px-3 py-1">Sepete Ekle</button></div>`).join('')}</div><div class="mt-5 bg-gold/10 p-3 rounded-xl">✨ SoapCalc benzeri hesaplayıcı için "Formül Hesaplayıcı" sekmesine gidin.</div></div>`; }
+    function renderTaki() { const prods = getProducts().filter(p=>p.category==="takı"); return `<div class="card-gold p-6"><h2 class="text-2xl mb-3">💎 Doğal Taş Takı Koleksiyonu</h2><div class="grid md:grid-cols-3 gap-5">${prods.map(p=>`<div class="text-center p-4 border border-gold/40 rounded-2xl"><i class="fas fa-gem text-2xl"></i><h3 class="font-bold">${p.name}</h3><p class="text-gold">₺${p.price}</p><button onclick="addToCart('${p.name}',${p.price})" class="btn-gold text-xs mt-2">Sepete Ekle</button></div>`).join('')}</div></div>`; }
+    function renderPackages() { return `<div class="card-gold p-6"><h2 class="text-2xl">👑 Üyelik Paketleri</h2><div class="grid md:grid-cols-3 gap-4 mt-4"><div class="p-4 border rounded-xl"><h3>🆓 Free</h3><p>5 ürün, temel hesaplayıcı</p><button class="btn-gold text-sm">Mevcut</button></div><div class="p-4 border rounded-xl"><h3>🚀 Pro</h3><p>Sınırsız ürün + API</p><p>₺299/ay</p><button class="btn-gold text-sm">Yükselt</button></div><div class="p-4 bg-gold/20 rounded-xl"><h3>💎 Premium</h3><p>Pro + AI Formül</p><p class="text-gold">Aktif Paketiniz</p></div></div></div>`; }
+    
+    let cart = [];
+    window.addToCart = function(name, price) { cart.push({ name, price, qty:1 }); alert(`${name} sepete eklendi (${cart.length} ürün).`); };
+    window.viewCart = function() {
+        if(cart.length===0) return alert("Sepet boş.");
+        let msg = "Merhaba, Altın Doğal Market'ten sipariş vermek istiyorum:%0A";
+        let total=0;
+        cart.forEach(i=> { msg += `- ${i.name}: ${i.price} TL%0A`; total+=i.price; });
+        msg += `Toplam: ${total} TL%0AAdres: `;
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        cart = [];
+    };
+    // Sayfa yönlendirme
+    const renderMap = { market: renderMarket, calculator: renderCalculator, gida: renderGida, kozmetik: renderKozmetik, takı: renderTaki, packages: renderPackages };
+    window.loadPage = function(page) { if(renderMap[page]) document.getElementById("pageContent").innerHTML = renderMap[page](); document.getElementById("dynamicTitle").innerHTML = document.querySelector(`a[data-page="${page}"] span`)?.innerText || "Doğal Market"; };
+    document.querySelectorAll(".nav-side").forEach(link=>{ link.addEventListener("click",(e)=>{ e.preventDefault(); const pg = link.getAttribute("data-page"); if(pg) loadPage(pg); document.querySelectorAll(".nav-side").forEach(l=>l.classList.remove("nav-active")); link.classList.add("nav-active"); }); });
+    initStorage(); checkAutoLogin();
+</script>
 </body>
 </html>
