@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Altın Doğal Market | Formül Hesaplayıcı + Satış</title>
-    <!-- Tailwind + Font Awesome + Chart.js -->
+    <title>Altın Doğal OS | Kullanıcı Yönetimli Market</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -19,7 +18,6 @@
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 24px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-            backdrop-filter: blur(2px);
         }
         .btn-gold {
             background: #D4AF37;
@@ -30,15 +28,12 @@
             transition: 0.2s;
         }
         .btn-gold:hover { opacity: 0.85; transform: scale(0.97); }
-        .badge-percent { background: #D4AF3722; border-radius: 40px; padding: 2px 10px; font-size: 12px; }
-        .ingredient-pill {
-            display: inline-block;
-            background: #1E2448;
-            border-radius: 30px;
-            padding: 4px 12px;
-            margin: 3px;
-            font-size: 12px;
-            border-left: 2px solid #D4AF37;
+        .btn-outline-gold {
+            border: 1px solid #D4AF37;
+            background: transparent;
+            color: #D4AF37;
+            border-radius: 40px;
+            padding: 6px 16px;
         }
         input, select {
             background-color: #111833;
@@ -52,189 +47,223 @@
             border-left: 3px solid #D4AF37;
             color: #D4AF37 !important;
         }
-        .soap-result { background: #0D1230; border-radius: 20px; padding: 12px; margin-top: 12px; }
+        .ingredient-pill {
+            display: inline-block;
+            background: #1E2448;
+            border-radius: 30px;
+            padding: 4px 12px;
+            margin: 3px;
+            font-size: 12px;
+            border-left: 2px solid #D4AF37;
+        }
+        .user-table td, .user-table th { padding: 10px; border-bottom: 1px solid rgba(212,175,55,0.3); }
     </style>
 </head>
 <body>
-
 <div id="app">
-    <!-- LOGIN EKRANI -->
-    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-6">
+    <!-- LOGIN / KAYIT EKRANI -->
+    <div id="authScreen" class="min-h-screen flex items-center justify-center p-6">
         <div class="card-gold p-8 w-full max-w-md">
-            <div class="text-center mb-6"><i class="fas fa-store text-4xl" style="color:#D4AF37"></i><h1 class="text-3xl font-bold mt-2">Altın Doğal Market</h1><p class="text-sm opacity-80">Formül Hesaplayıcı + Doğal Ürünler</p></div>
-            <div class="space-y-4">
-                <input type="text" id="loginEmail" placeholder="E-posta" class="w-full" value="admin@natural.com">
-                <input type="password" id="loginPassword" placeholder="Şifre" value="admin123" class="w-full">
-                <button onclick="authLogin()" class="btn-gold w-full">🔐 Giriş Yap / Marketi Keşfet</button>
-                <p class="text-xs text-center">Demo: admin@natural.com / admin123 (Premium)</p>
+            <div class="text-center mb-6"><i class="fas fa-users text-4xl" style="color:#D4AF37"></i><h1 class="text-3xl font-bold mt-2">Altın Doğal OS</h1><p class="text-sm opacity-80">Kullanıcı Girişi / Yönetim</p></div>
+            <div id="authTabs" class="flex gap-2 mb-4 border-b border-gold/30">
+                <button id="tabLogin" class="flex-1 py-2 font-bold text-gold border-b-2 border-gold">Giriş Yap</button>
+                <button id="tabRegister" class="flex-1 py-2 opacity-70">Kayıt Ol</button>
+            </div>
+            <!-- GİRİŞ FORM -->
+            <div id="loginForm">
+                <input type="text" id="loginEmail" placeholder="E-posta" class="w-full mb-3" value="admin@natural.com">
+                <input type="password" id="loginPassword" placeholder="Şifre" class="w-full mb-3" value="admin123">
+                <button onclick="authLogin()" class="btn-gold w-full">🔐 Giriş Yap</button>
+                <p class="text-center text-xs mt-3"><a href="#" onclick="alert('Şifre sıfırlama bağlantısı demo: lütfen iletişime geçin.')" class="underline">Şifremi unuttum</a></p>
+                <p class="text-xs text-center mt-4 opacity-70">Demo Admin: admin@natural.com / admin123<br>Demo Üye: user@test.com / 123456 (kayıt olabilirsiniz)</p>
+            </div>
+            <!-- KAYIT FORM -->
+            <div id="registerForm" class="hidden">
+                <input type="text" id="regName" placeholder="Ad Soyad" class="w-full mb-3">
+                <input type="email" id="regEmail" placeholder="E-posta" class="w-full mb-3">
+                <input type="password" id="regPassword" placeholder="Şifre (min 6 karakter)" class="w-full mb-3">
+                <select id="regPackage" class="w-full mb-3"><option value="Free">Ücretsiz (Free)</option><option value="Pro">Pro (299₺/ay)</option><option value="Premium">Premium (599₺/ay)</option></select>
+                <button onclick="authRegister()" class="btn-gold w-full">📝 Kayıt Ol</button>
             </div>
             <div class="mt-6 text-center text-xs opacity-70"><i class="fas fa-percent"></i> Sabun · Sirke · Tentür · Bileklik · Tespih</div>
         </div>
     </div>
 
-    <!-- ANA PANEL -->
+    <!-- ANA PANEL (SADECE GİRİŞ YAPANLAR) -->
     <div id="dashboardApp" class="hidden flex h-screen overflow-hidden">
         <!-- SIDEBAR -->
         <aside class="w-80 bg-[#0B0F2A] border-r border-[#D4AF37]/30 flex flex-col overflow-y-auto">
             <div class="p-6 flex items-center gap-3 border-b border-[#D4AF37]/30">
                 <i class="fas fa-gem text-2xl" style="color:#D4AF37"></i>
                 <span class="font-bold text-xl">ALTIN<span style="color:#D4AF37">DOĞAL</span></span>
-                <span id="userPackageBadge" class="ml-auto text-xs bg-[#D4AF37]/20 px-2 py-1 rounded-full">Premium</span>
+                <span id="userPackageBadge" class="ml-auto text-xs bg-[#D4AF37]/20 px-2 py-1 rounded-full">Free</span>
             </div>
-            <nav class="flex-1 py-5 space-y-1 px-4">
-                <a href="#" data-page="market" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-store"></i><span>🛒 Doğal Market</span></a>
-                <a href="#" data-page="calculator" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-calculator"></i><span>🧪 Formül Hesaplayıcı (SoapCalc)</span></a>
-                <a href="#" data-page="gida" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-apple-alt"></i><span>🍯 Gıda Reçeteleri</span></a>
-                <a href="#" data-page="kozmetik" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-spa"></i><span>🌸 Kozmetik & Sabun</span></a>
-                <a href="#" data-page="takı" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-gem"></i><span>💎 Doğal Taş Takı</span></a>
-                <a href="#" data-page="packages" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-crown"></i><span>👑 Kullanıcı Paketleri</span></a>
+            <nav class="flex-1 py-5 space-y-1 px-4" id="mainNav">
+                <!-- Dinamik menü (Admin/Üye farkı) -->
             </nav>
             <div class="p-4 border-t border-[#D4AF37]/30 text-xs">
-                <div class="flex justify-between mb-2"><span>👤 <span id="sidebarUserName">Admin</span></span><button onclick="logout()" class="text-amber-400"><i class="fas fa-sign-out-alt"></i> Çıkış</button></div>
+                <div class="flex justify-between mb-2"><span>👤 <span id="sidebarUserName">Kullanıcı</span> (<span id="userRoleSpan">Üye</span>)</span><button onclick="logout()" class="text-amber-400"><i class="fas fa-sign-out-alt"></i> Çıkış</button></div>
                 <div class="text-center mt-2 opacity-70">© 2026 Altın Doğal Market<br>📧 info@altindogal.com | +90 552 123 45 67</div>
             </div>
         </aside>
 
-        <!-- MAIN İÇERİK -->
         <main class="flex-1 overflow-y-auto p-6 md:p-8">
-            <div class="flex justify-between items-center mb-6"><h1 id="dynamicTitle" class="text-3xl font-bold gold-text">Doğal Market</h1><div><span class="bg-gold/20 px-3 py-1 rounded-full text-sm"><i class="fas fa-chart-simple"></i> Hoşgeldiniz</span></div></div>
+            <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
+                <h1 id="dynamicTitle" class="text-3xl font-bold gold-text">Yönetim Paneli</h1>
+                <div><span class="bg-gold/20 px-3 py-1 rounded-full text-sm"><i class="fas fa-user-shield"></i> <span id="userWelcomeName">Hoşgeldiniz</span></span></div>
+            </div>
             <div id="pageContent"></div>
-            <footer class="mt-12 pt-6 border-t border-[#D4AF37]/20 text-center text-sm opacity-70">
-                <p><i class="fas fa-copyright"></i> 2026 Altın Doğal Üretim ve Ticaret Sistemi | Gıda (Sirke, Macun, Tentür, Propolis) | Kozmetik (Sabun, Krem, Şampuan, Parfüm) | Doğaltaş (Kolye, Bileklik, Tespih) | Tüm formüller yüzdelik bazlıdır.</p>
-                <p class="mt-1">🔬 SoapCalc mantığı ile hassas hesaplama | 🌿 %100 doğal içerikler</p>
-            </footer>
+            <footer class="mt-12 pt-6 border-t border-[#D4AF37]/20 text-center text-sm opacity-70">🔬 SoapCalc mantığı ile hassas hesaplama | 🌿 %100 doğal içerikler | Kullanıcı Yönetimli Sistem</footer>
         </main>
     </div>
 </div>
 
 <script>
-    // ---------- VERİTABANI (Ürünler + Kullanıcı) ----------
+    // ---------- KULLANICI VERİTABANI (localStorage) ----------
     let currentUser = null;
-    const DB_INIT = {
-        users: [{ email: "admin@natural.com", password: "admin123", name: "Üretim Uzmanı", package: "Premium" }],
-        products: [
-            // KOZMETİK (Sabun vb)
-            { id: "k1", name: "Zeytinyağlı Doğal Sabun", category: "kozmetik", subcat: "sabun", composition: { zeytinyagi: 80, hindistancevizi: 15, hintyagi: 5 }, price: 129, cost: 45, stock: 95, sapNaoh: 0.134 },
-            { id: "k2", name: "Lavanta Kremi (Yüz)", category: "kozmetik", subcat: "krem", composition: { lavanta: 15, shea: 30, aloe: 55 }, price: 189, cost: 78, stock: 42 },
-            { id: "k3", name: "Biberiye Şampuan", category: "kozmetik", subcat: "sampuan", composition: { biberiye: 25, ısırgan: 35, su: 40 }, price: 159, stock: 68 },
-            // GIDA
-            { id: "g1", name: "Elma Sirkesi (Anaçlı)", category: "gida", subcat: "sirke", composition: { elmaSuyu: 85, anaKultur: 10, su: 5 }, price: 89, stock: 120, asitlik: 5.5 },
-            { id: "g2", name: "Keçiboynuzu Macunu", category: "gida", subcat: "macun", composition: { keçiboynuzu: 70, bal: 20, ceviz: 10 }, price: 149, stock: 80 },
-            { id: "g3", name: "Propolis Tentür (30ml)", category: "gida", subcat: "tentür", composition: { propolis: 35, etanol: 55, su: 10 }, price: 249, stock: 33 },
-            { id: "g4", name: "Dağ Çayı (Fermente)", category: "gida", subcat: "cay", composition: { adaçayı: 60, kekik: 40 }, price: 79, stock: 200 },
-            // DOĞAL TAŞ TAKI
-            { id: "t1", name: "Kehribar Bileklik", category: "takı", subcat: "bileklik", composition: { kehribar: 90, ipek: 10 }, price: 349, stock: 38 },
-            { id: "t2", name: "Yeşim Kolye", category: "takı", subcat: "kolye", composition: { yeşim: 95, gümüş: 5 }, price: 479, stock: 22 },
-            { id: "t3", name: "Sedef Tespih", category: "takı", subcat: "tespih", composition: { sedef: 85, inci: 15 }, price: 599, stock: 15 }
-        ],
-        orders: [{ id:"ORD1", productName:"Elma Sirkesi", qty:2, total:178, status:"pending", date:"2026-04-07" }]
-    };
-    function initStorage() {
-        if(!localStorage.getItem("market_products")) localStorage.setItem("market_products", JSON.stringify(DB_INIT.products));
-        if(!localStorage.getItem("market_users")) localStorage.setItem("market_users", JSON.stringify(DB_INIT.users));
-        if(!localStorage.getItem("market_orders")) localStorage.setItem("market_orders", JSON.stringify(DB_INIT.orders));
+    function initUserDB() {
+        if(!localStorage.getItem("altin_users")) {
+            const defaultUsers = [
+                { id: "u1", name: "Admin User", email: "admin@natural.com", password: "admin123", role: "admin", package: "Premium" },
+                { id: "u2", name: "Ali Üye", email: "user@test.com", password: "123456", role: "user", package: "Free" }
+            ];
+            localStorage.setItem("altin_users", JSON.stringify(defaultUsers));
+        }
+        if(!localStorage.getItem("altin_products")) {
+            const products = [
+                { id: "k1", name: "Zeytinyağlı Doğal Sabun", category: "kozmetik", subcat: "sabun", composition: { zeytinyagi: 80, hindistancevizi: 15, hintyagi: 5 }, price: 129, stock: 95 },
+                { id: "g1", name: "Elma Sirkesi (Anaçlı)", category: "gida", subcat: "sirke", composition: { elmaSuyu: 85, anaKultur: 10 }, price: 89, stock: 120 },
+                { id: "t1", name: "Kehribar Bileklik", category: "takı", subcat: "bileklik", composition: { kehribar: 90 }, price: 349, stock: 38 }
+            ];
+            localStorage.setItem("altin_products", JSON.stringify(products));
+        }
+        if(!localStorage.getItem("altin_orders")) localStorage.setItem("altin_orders", JSON.stringify([]));
     }
-    function getProducts() { return JSON.parse(localStorage.getItem("market_products")); }
-    function getOrders() { return JSON.parse(localStorage.getItem("market_orders")||"[]"); }
-    function saveOrders(o) { localStorage.setItem("market_orders", JSON.stringify(o)); }
+    function getUsers() { return JSON.parse(localStorage.getItem("altin_users")); }
+    function saveUsers(users) { localStorage.setItem("altin_users", JSON.stringify(users)); }
+    function getProducts() { return JSON.parse(localStorage.getItem("altin_products")); }
+    function getOrders() { return JSON.parse(localStorage.getItem("altin_orders")||"[]"); }
+    function saveOrders(o) { localStorage.setItem("altin_orders", JSON.stringify(o)); }
 
-    // Auth
+    // AUTH İŞLEMLERİ
     window.authLogin = function() {
-        const email = document.getElementById("loginEmail").value;
+        const email = document.getElementById("loginEmail").value.trim();
         const pwd = document.getElementById("loginPassword").value;
-        const users = JSON.parse(localStorage.getItem("market_users"));
+        const users = getUsers();
         const user = users.find(u=>u.email===email && u.password===pwd);
-        if(user){ currentUser=user; localStorage.setItem("activeMarketUser",JSON.stringify(user)); document.getElementById("loginScreen").classList.add("hidden"); document.getElementById("dashboardApp").classList.remove("hidden"); document.getElementById("sidebarUserName").innerText=user.name; document.getElementById("userPackageBadge").innerHTML=user.package; loadPage("market"); } else alert("Giriş başarısız. admin@natural.com / admin123");
+        if(user) {
+            currentUser = { ...user };
+            localStorage.setItem("activeAltinUser", JSON.stringify(currentUser));
+            document.getElementById("authScreen").classList.add("hidden");
+            document.getElementById("dashboardApp").classList.remove("hidden");
+            updateSidebarUI();
+            loadPage("market");
+        } else { alert("Giriş başarısız! admin@natural.com / admin123 veya kayıt olun."); }
     };
-    window.logout = function(){ localStorage.removeItem("activeMarketUser"); document.getElementById("dashboardApp").classList.add("hidden"); document.getElementById("loginScreen").classList.remove("hidden"); currentUser=null; };
-    function checkAutoLogin(){ const saved=localStorage.getItem("activeMarketUser"); if(saved){ currentUser=JSON.parse(saved); document.getElementById("loginScreen").classList.add("hidden"); document.getElementById("dashboardApp").classList.remove("hidden"); document.getElementById("sidebarUserName").innerText=currentUser.name; document.getElementById("userPackageBadge").innerHTML=currentUser.package; loadPage("market"); } }
+    window.authRegister = function() {
+        const name = document.getElementById("regName").value;
+        const email = document.getElementById("regEmail").value;
+        const pwd = document.getElementById("regPassword").value;
+        const pkg = document.getElementById("regPackage").value;
+        if(!name || !email || pwd.length<3) { alert("Lütfen tüm alanları doldurun (şifre min 3 karakter)"); return; }
+        let users = getUsers();
+        if(users.find(u=>u.email===email)) { alert("Bu e-posta zaten kayıtlı!"); return; }
+        const newUser = { id: "u"+Date.now(), name, email, password: pwd, role: "user", package: pkg };
+        users.push(newUser);
+        saveUsers(users);
+        alert("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
+        document.getElementById("tabRegister").click();
+    };
+    window.logout = function() { localStorage.removeItem("activeAltinUser"); currentUser=null; document.getElementById("dashboardApp").classList.add("hidden"); document.getElementById("authScreen").classList.remove("hidden"); };
+    function updateSidebarUI() {
+        if(!currentUser) return;
+        document.getElementById("sidebarUserName").innerText = currentUser.name;
+        document.getElementById("userWelcomeName").innerHTML = currentUser.name;
+        document.getElementById("userPackageBadge").innerHTML = currentUser.package;
+        document.getElementById("userRoleSpan").innerHTML = currentUser.role === "admin" ? "Yönetici" : "Üye";
+        const navContainer = document.getElementById("mainNav");
+        let navHtml = `
+            <a href="#" data-page="market" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-store"></i><span>🛒 Doğal Market</span></a>
+            <a href="#" data-page="calculator" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-calculator"></i><span>🧪 Formül Hesaplayıcı</span></a>
+            <a href="#" data-page="gida" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-apple-alt"></i><span>🍯 Gıda Reçeteleri</span></a>
+            <a href="#" data-page="kozmetik" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-spa"></i><span>🌸 Kozmetik</span></a>
+            <a href="#" data-page="takı" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-gem"></i><span>💎 Doğal Taş</span></a>
+        `;
+        if(currentUser.role === "admin") {
+            navHtml += `<a href="#" data-page="adminPanel" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-users-cog"></i><span>👑 Admin Panel (Kullanıcı Yönetimi)</span></a>`;
+        }
+        navHtml += `<a href="#" data-page="packages" class="nav-side flex items-center gap-3 px-4 py-3 rounded-xl"><i class="fas fa-crown"></i><span>📦 Paketlerim</span></a>`;
+        navContainer.innerHTML = navHtml;
+        document.querySelectorAll(".nav-side").forEach(link=>{
+            link.addEventListener("click",(e)=>{ e.preventDefault(); const pg = link.getAttribute("data-page"); if(pg) loadPage(pg); document.querySelectorAll(".nav-side").forEach(l=>l.classList.remove("nav-active")); link.classList.add("nav-active"); });
+        });
+    }
+    function checkAutoLogin() { const saved = localStorage.getItem("activeAltinUser"); if(saved) { currentUser = JSON.parse(saved); document.getElementById("authScreen").classList.add("hidden"); document.getElementById("dashboardApp").classList.remove("hidden"); updateSidebarUI(); loadPage("market"); } }
 
-    // ---------- SAYFALAR ----------
-    // MARKET (Ana Satış)
+    // ----- RENDER SAYFALARI -----
     function renderMarket() {
         const products = getProducts();
-        return `<div class="card-gold p-6"><h2 class="text-2xl font-bold mb-4"><i class="fas fa-leaf"></i> Doğal Ürün Marketi</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-5">${products.map(p=>`<div class="bg-[#0A0F2A] border border-gold/40 p-4 rounded-2xl"><h3 class="text-xl gold-text">${p.name}</h3><p class="text-sm opacity-80">${p.subcat || p.category}</p><div class="mt-2 flex flex-wrap">${Object.entries(p.composition).slice(0,2).map(([k,v])=>`<span class="ingredient-pill">%${v} ${k}</span>`).join('')}</div><div class="flex justify-between items-center mt-3"><span class="text-gold text-xl">₺${p.price}</span><button onclick="addToCart('${p.name}',${p.price})" class="btn-gold text-sm px-3 py-1"><i class="fas fa-cart-plus"></i> Sepet</button></div></div>`).join('')}</div><div class="mt-6"><button onclick="viewCart()" class="btn-gold w-full md:w-auto"><i class="fab fa-whatsapp"></i> Sepeti WhatsApp ile Siparişe Dönüştür</button></div></div>`;
+        let cart = JSON.parse(localStorage.getItem("tempCart")||"[]");
+        return `<div class="card-gold p-6"><h2 class="text-2xl font-bold mb-4"><i class="fas fa-leaf"></i> Doğal Ürün Marketi</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-5">${products.map(p=>`<div class="bg-[#0A0F2A] border border-gold/40 p-4 rounded-2xl"><h3 class="text-xl gold-text">${p.name}</h3><p class="text-sm opacity-80">${p.subcat || p.category}</p><div class="flex justify-between mt-3"><span class="text-gold text-xl">₺${p.price}</span><button onclick="addToCart('${p.name}',${p.price})" class="btn-gold text-sm px-3 py-1"><i class="fas fa-cart-plus"></i> Sepet</button></div></div>`).join('')}</div><div class="mt-5"><button onclick="checkoutCart()" class="btn-gold w-full md:w-auto"><i class="fab fa-whatsapp"></i> Sepeti WhatsApp ile Siparişe Dönüştür</button></div></div>`;
     }
-    // SOAPCALC TARZI HESAPLAYICI
-    function renderCalculator() {
-        return `<div class="card-gold p-6"><h2 class="text-2xl font-bold">🧼 Sabun / Kozmetik Formül Hesaplayıcı (SoapCalc Mantığı)</h2>
-        <p class="mb-4">Yağların SAP değerlerine göre NaOH ve su miktarını hesaplar.</p>
-        <div class="grid md:grid-cols-2 gap-6">
-            <div><label class="block">Toplam Yağ (gram):</label><input type="number" id="oilWeight" value="500" class="w-full"><label class="block mt-2">Süper Yağ (%) :</label><input type="number" id="superfat" value="5" class="w-full"><label class="block mt-2">Su Yüzdesi (Yağa göre):</label><input type="number" id="waterPercent" value="38" class="w-full"></div>
-            <div><label class="block">Yağları Seç ve miktar (gram):</label>
-            <select id="oilSelect" class="w-full"><option value="zeytinyagi">Zeytinyağı (SAP:0.134)</option><option value="hindistancevizi">Hindistancevizi (SAP:0.183)</option><option value="palm">Palmiye (SAP:0.141)</option><option value="shea">Shea (SAP:0.128)</option></select>
-            <div class="flex gap-2 mt-2"><input type="number" id="oilAmount" placeholder="gram" class="w-full"><button onclick="addOilToRecipe()" class="btn-gold text-sm px-3 py-1">Ekle</button></div>
-            <div id="recipeOilsList" class="mt-3 text-sm bg-[#111833] p-2 rounded-xl"></div></div>
-        </div>
-        <div id="calcResult" class="soap-result mt-4 text-center">Henüz hesaplama yapılmadı. Yağ ekleyip "Hesapla"ya tıklayın.</div>
-        <button onclick="calculateSoap()" class="btn-gold mt-4 w-full">🧪 NaOH ve Su Hesapla</button>
-        </div>`;
-    }
-    let tempRecipe = [];
+    let tempCart = [];
+    window.addToCart = function(name,price) { tempCart.push({name,price}); localStorage.setItem("tempCart",JSON.stringify(tempCart)); alert(`${name} sepete eklendi (${tempCart.length} ürün).`); };
+    window.checkoutCart = function() { if(tempCart.length===0) return alert("Sepet boş"); let msg = "Merhaba, Altın Doğal Market'ten sipariş:%0A"; let total=0; tempCart.forEach(i=>{ msg+=`- ${i.name}: ${i.price} TL%0A`; total+=i.price; }); msg+=`Toplam: ${total} TL%0AAdres: `; window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank'); tempCart=[]; localStorage.setItem("tempCart","[]"); };
+    // SoapCalc
+    let recipeOils = [];
+    function updateOilList() { document.getElementById("recipeOilsList").innerHTML = recipeOils.map(o=>`<div>${o.name}: ${o.weight}gr (SAP:${o.sap})</div>`).join('') || "Henüz yağ eklenmedi."; }
     window.addOilToRecipe = function() {
-        const select = document.getElementById("oilSelect");
-        const oilName = select.options[select.selectedIndex]?.text.split(" ")[0];
+        const select = document.getElementById("oilSelect"); const val=select.value; let name="", sap=0.134;
+        if(val==="zeytinyagi") { name="Zeytinyağı"; sap=0.134; } else if(val==="hindistancevizi") { name="Hindistancevizi"; sap=0.183; } else if(val==="palm") { name="Palmiye"; sap=0.141; } else { name="Shea"; sap=0.128; }
         const amount = parseFloat(document.getElementById("oilAmount").value);
         if(isNaN(amount) || amount<=0) return alert("Geçerli miktar girin");
-        let sap = 0.134;
-        if(select.value==="zeytinyagi") sap=0.134;
-        if(select.value==="hindistancevizi") sap=0.183;
-        if(select.value==="palm") sap=0.141;
-        if(select.value==="shea") sap=0.128;
-        tempRecipe.push({ name: oilName, weight: amount, sap });
-        document.getElementById("recipeOilsList").innerHTML = tempRecipe.map(o=>`<div>${o.name}: ${o.weight}gr (SAP:${o.sap})</div>`).join('');
-        document.getElementById("oilAmount").value = '';
+        recipeOils.push({ name, weight: amount, sap });
+        updateOilList(); document.getElementById("oilAmount").value='';
     };
     window.calculateSoap = function() {
-        if(tempRecipe.length===0) { alert("Lütfen en az bir yağ ekleyin"); return; }
-        const totalOil = tempRecipe.reduce((sum,o)=>sum+o.weight,0);
-        let requiredNaOH = tempRecipe.reduce((sum,o)=>sum + (o.weight * o.sap),0);
-        const superfat = parseFloat(document.getElementById("superfat").value) || 5;
-        const finalLye = requiredNaOH * (1 - superfat/100);
-        const waterPercent = parseFloat(document.getElementById("waterPercent").value) || 38;
+        if(recipeOils.length===0) { alert("Yağ ekleyin"); return; }
+        const totalOil = recipeOils.reduce((s,o)=>s+o.weight,0);
+        let required = recipeOils.reduce((s,o)=>s+(o.weight * o.sap),0);
+        const superfat = parseFloat(document.getElementById("superfat").value)||5;
+        const finalLye = required * (1 - superfat/100);
+        const waterPercent = parseFloat(document.getElementById("waterPercent").value)||38;
         const water = totalOil * (waterPercent/100);
-        document.getElementById("calcResult").innerHTML = `<strong>📊 Sonuç (SoapCalc stili):</strong><br>Toplam Yağ: ${totalOil.toFixed(0)} gr<br>NaOH: ${finalLye.toFixed(2)} gram<br>Su: ${water.toFixed(2)} ml (yağa göre %${waterPercent})<br>Süper Yağ: %${superfat}<br>Not: Sabun sertliği için ortalama değerler idealdir.`;
+        document.getElementById("calcResult").innerHTML = `<strong>📊 Sonuç (SoapCalc stili):</strong><br>Toplam Yağ: ${totalOil.toFixed(0)} gr<br>NaOH: ${finalLye.toFixed(2)} gr<br>Su: ${water.toFixed(2)} ml<br>Süper Yağ: %${superfat}`;
     };
-    // GIDA SAYFASI (Sirke, tentür vb hesaplama)
-    function renderGida() {
-        return `<div class="card-gold p-6"><h2 class="text-2xl font-bold">🍎 Gıda Reçete Hesaplayıcı (Sirke / Tentür / Fermente)</h2>
-        <div class="grid md:grid-cols-2 gap-6"><div><label>Ürün Tipi:</label><select id="gidaTipi" class="w-full"><option value="sirke">Sirke (Asitlik Hesaplama)</option><option value="tentür">Tentür (Bitki/Alkol Oranı)</option><option value="macun">Macun / Reçel</option></select><label class="mt-2">Hedef Hacim (ml / gr):</label><input type="number" id="hedefHacim" value="1000" class="w-full"></div>
-        <div id="gidaDynamicInputs">Sirke Asitlik Oranı (%): <input type="number" id="asitlik" value="5" class="w-full"></div></div>
-        <button onclick="calculateFood()" class="btn-gold mt-4">🌿 Gıda Formülünü Hesapla</button><div id="foodResult" class="soap-result mt-3"></div>
-        <div class="mt-6"><h3>⭐ Hazır Gıda Ürünleri (Sepete ekle)</h3><div class="grid grid-cols-2 gap-2 mt-2">${getProducts().filter(p=>p.category==="gida").map(p=>`<button onclick="addToCart('${p.name}',${p.price})" class="bg-gold/20 p-2 rounded-xl text-sm">${p.name} - ₺${p.price}</button>`).join('')}</div></div></div>`;
+    function renderCalculator() { return `<div class="card-gold p-6"><h2 class="text-2xl font-bold">🧼 Sabun Hesaplayıcı</h2><div class="grid md:grid-cols-2 gap-4"><div><label>Toplam Yağ (gr):</label><input type="number" id="oilWeightTotal" value="500" disabled class="bg-gray-800"><label>Süper Yağ %:</label><input type="number" id="superfat" value="5"><label>Su Yüzdesi:</label><input type="number" id="waterPercent" value="38"></div><div><label>Yağ Seç:</label><select id="oilSelect" class="w-full"><option value="zeytinyagi">Zeytinyağı</option><option value="hindistancevizi">Hindistancevizi</option><option value="palm">Palmiye</option><option value="shea">Shea</option></select><input type="number" id="oilAmount" placeholder="gram" class="w-full mt-2"><button onclick="addOilToRecipe()" class="btn-gold text-sm mt-2 w-full">Ekle</button><div id="recipeOilsList" class="mt-2 text-sm bg-black/30 p-2 rounded"></div></div></div><button onclick="calculateSoap()" class="btn-gold mt-4 w-full">Hesapla</button><div id="calcResult" class="soap-result mt-4"></div></div>`; }
+    function renderGida() { return `<div class="card-gold p-6"><h2 class="text-2xl">🍎 Gıda Hesaplayıcı</h2><select id="foodType" class="w-full"><option value="sirke">Sirke (Asitlik)</option><option value="tentür">Tentür (1:5)</option></select><input type="number" id="foodVolume" placeholder="Hacim (ml)" class="w-full mt-2"><button onclick="calcFood()" class="btn-gold mt-3">Hesapla</button><div id="foodResult" class="mt-3 p-3 bg-black/30 rounded"></div></div>`; }
+    window.calcFood = function() { let t=document.getElementById("foodType").value, v=parseFloat(document.getElementById("foodVolume").value); if(t==="sirke") document.getElementById("foodResult").innerHTML=`Sirke için ${v}ml için yaklaşık ${(v*0.1).toFixed(0)} ml anaç kullanın.`; else document.getElementById("foodResult").innerHTML=`Tentür için ${v}ml: ${(v/6).toFixed(0)} gr bitki, ${(v*5/6).toFixed(0)} ml alkol.`; };
+    function renderKozmetik() { const p=getProducts().filter(p=>p.category==="kozmetik"); return `<div class="card-gold p-6"><h2>🌸 Kozmetik Ürünler</h2><div class="grid md:grid-cols-3 gap-3">${p.map(p=>`<div class="border p-3 rounded">${p.name} - ₺${p.price}<button onclick="addToCart('${p.name}',${p.price})" class="btn-gold text-xs ml-2">Sepet</button></div>`).join('')}</div></div>`; }
+    function renderTakı() { const p=getProducts().filter(p=>p.category==="takı"); return `<div class="card-gold p-6"><h2>💎 Takı Koleksiyonu</h2><div class="grid md:grid-cols-3 gap-3">${p.map(p=>`<div class="border p-3 rounded">${p.name} - ₺${p.price}<button onclick="addToCart('${p.name}',${p.price})" class="btn-gold text-xs ml-2">Ekle</button></div>`).join('')}</div></div>`; }
+    function renderPackages() { return `<div class="card-gold p-6"><h2>📦 Mevcut Paketiniz: ${currentUser.package}</h2><div class="grid md:grid-cols-3 gap-4 mt-4"><div class="border p-4 rounded"><h3>Free</h3><button class="btn-outline-gold">Mevcut</button></div><div class="border p-4 rounded"><h3>Pro</h3><button class="btn-gold text-sm">Yükselt</button></div><div class="border p-4 rounded"><h3>Premium</h3><button class="btn-gold text-sm">Yükselt</button></div></div></div>`; }
+    // ADMIN PANELİ: Kullanıcı listesi, silme, rol/paket güncelleme
+    function renderAdminPanel() {
+        const users = getUsers();
+        return `<div class="card-gold p-6"><h2 class="text-2xl font-bold mb-4"><i class="fas fa-users-gear"></i> Kullanıcı Yönetim Paneli</h2><table class="w-full user-table"><thead><tr><th>Ad</th><th>E-posta</th><th>Rol</th><th>Paket</th><th>İşlemler</th></tr></thead><tbody>
+        ${users.map(u=>`<tr><td>${u.name}</td><td>${u.email}</td><td><select onchange="updateUserField('${u.id}','role',this.value)" class="text-xs p-1">${['admin','user'].map(r=>`<option ${u.role===r?'selected':''} value="${r}">${r}</option>`).join('')}</select></td>
+        <td><select onchange="updateUserField('${u.id}','package',this.value)" class="text-xs p-1">${['Free','Pro','Premium'].map(p=>`<option ${u.package===p?'selected':''} value="${p}">${p}</option>`).join('')}</select></td>
+        <td><button onclick="deleteUser('${u.id}')" class="text-red-400 text-sm"><i class="fas fa-trash"></i> Sil</button></td></tr>`).join('')}
+        </tbody>}</table><div class="mt-4 p-2 bg-gold/10 rounded"><p class="text-sm"><i class="fas fa-info-circle"></i> Admin yetkisi olan kullanıcılar bu paneli görür. Kullanıcı rolünü değiştirebilirsiniz.</p></div></div>`;
     }
-    window.calculateFood = function() {
-        const tip = document.getElementById("gidaTipi").value;
-        const hacim = parseFloat(document.getElementById("hedefHacim").value);
-        if(tip==="sirke") {
-            const asit = parseFloat(document.getElementById("asitlik").value);
-            document.getElementById("foodResult").innerHTML = `🍏 ${hacim} ml Sirke için: Asitlik %${asit} hedefleniyor. Kullanılacak anaç sirke miktarı: ~${(asit*10).toFixed(0)} ml, su ile tamamlanır. Fermantasyon 3-4 hafta.`;
-        } else if(tip==="tentür") {
-            document.getElementById("foodResult").innerHTML = `🌿 ${hacim} ml Tentür için: Bitki/Alkol oranı 1:5 → ${(hacim/6).toFixed(0)} gr bitki, ${(hacim*5/6).toFixed(0)} ml %70 alkol. 4 hafta beklet.`;
-        } else {
-            document.getElementById("foodResult").innerHTML = `🍯 ${hacim} gr Macun için: %70 meyve püresi, %20 bal, %10 ceviz/fındık. Karıştırıp kaynatın.`;
-        }
+    window.updateUserField = function(userId, field, value) {
+        let users = getUsers();
+        const index = users.findIndex(u=>u.id===userId);
+        if(index!==-1) { users[index][field] = value; saveUsers(users); alert(`${field} güncellendi`); if(currentUser.id===userId && field==='role') { currentUser.role=value; localStorage.setItem("activeAltinUser",JSON.stringify(currentUser)); updateSidebarUI(); } loadPage("adminPanel"); }
     };
-    function renderKozmetik() { const prods = getProducts().filter(p=>p.category==="kozmetik"); return `<div class="card-gold p-6"><h2 class="text-2xl mb-3">🌸 Kozmetik & Sabun Ürünleri</h2><div class="grid md:grid-cols-3 gap-4">${prods.map(p=>`<div class="border border-gold/40 p-4 rounded-xl"><h3>${p.name}</h3><p>₺${p.price}</p><button onclick="addToCart('${p.name}',${p.price})" class="btn-gold text-xs px-3 py-1">Sepete Ekle</button></div>`).join('')}</div><div class="mt-5 bg-gold/10 p-3 rounded-xl">✨ SoapCalc benzeri hesaplayıcı için "Formül Hesaplayıcı" sekmesine gidin.</div></div>`; }
-    function renderTaki() { const prods = getProducts().filter(p=>p.category==="takı"); return `<div class="card-gold p-6"><h2 class="text-2xl mb-3">💎 Doğal Taş Takı Koleksiyonu</h2><div class="grid md:grid-cols-3 gap-5">${prods.map(p=>`<div class="text-center p-4 border border-gold/40 rounded-2xl"><i class="fas fa-gem text-2xl"></i><h3 class="font-bold">${p.name}</h3><p class="text-gold">₺${p.price}</p><button onclick="addToCart('${p.name}',${p.price})" class="btn-gold text-xs mt-2">Sepete Ekle</button></div>`).join('')}</div></div>`; }
-    function renderPackages() { return `<div class="card-gold p-6"><h2 class="text-2xl">👑 Üyelik Paketleri</h2><div class="grid md:grid-cols-3 gap-4 mt-4"><div class="p-4 border rounded-xl"><h3>🆓 Free</h3><p>5 ürün, temel hesaplayıcı</p><button class="btn-gold text-sm">Mevcut</button></div><div class="p-4 border rounded-xl"><h3>🚀 Pro</h3><p>Sınırsız ürün + API</p><p>₺299/ay</p><button class="btn-gold text-sm">Yükselt</button></div><div class="p-4 bg-gold/20 rounded-xl"><h3>💎 Premium</h3><p>Pro + AI Formül</p><p class="text-gold">Aktif Paketiniz</p></div></div></div>`; }
-    
-    let cart = [];
-    window.addToCart = function(name, price) { cart.push({ name, price, qty:1 }); alert(`${name} sepete eklendi (${cart.length} ürün).`); };
-    window.viewCart = function() {
-        if(cart.length===0) return alert("Sepet boş.");
-        let msg = "Merhaba, Altın Doğal Market'ten sipariş vermek istiyorum:%0A";
-        let total=0;
-        cart.forEach(i=> { msg += `- ${i.name}: ${i.price} TL%0A`; total+=i.price; });
-        msg += `Toplam: ${total} TL%0AAdres: `;
-        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        cart = [];
+    window.deleteUser = function(userId) {
+        if(currentUser.id===userId) { alert("Kendi hesabınızı silemezsiniz!"); return; }
+        let users = getUsers().filter(u=>u.id!==userId);
+        saveUsers(users);
+        alert("Kullanıcı silindi.");
+        loadPage("adminPanel");
     };
-    // Sayfa yönlendirme
-    const renderMap = { market: renderMarket, calculator: renderCalculator, gida: renderGida, kozmetik: renderKozmetik, takı: renderTaki, packages: renderPackages };
-    window.loadPage = function(page) { if(renderMap[page]) document.getElementById("pageContent").innerHTML = renderMap[page](); document.getElementById("dynamicTitle").innerHTML = document.querySelector(`a[data-page="${page}"] span`)?.innerText || "Doğal Market"; };
-    document.querySelectorAll(".nav-side").forEach(link=>{ link.addEventListener("click",(e)=>{ e.preventDefault(); const pg = link.getAttribute("data-page"); if(pg) loadPage(pg); document.querySelectorAll(".nav-side").forEach(l=>l.classList.remove("nav-active")); link.classList.add("nav-active"); }); });
-    initStorage(); checkAutoLogin();
+    // routing
+    const renderMap = { market: renderMarket, calculator: renderCalculator, gida: renderGida, kozmetik: renderKozmetik, takı: renderTakı, adminPanel: renderAdminPanel, packages: renderPackages };
+    window.loadPage = function(page) { if(renderMap[page]) document.getElementById("pageContent").innerHTML = renderMap[page](); document.getElementById("dynamicTitle").innerHTML = document.querySelector(`a[data-page="${page}"] span`)?.innerText || "Panel"; };
+    // Tab switcher
+    document.getElementById("tabLogin").addEventListener("click",()=>{ document.getElementById("loginForm").classList.remove("hidden"); document.getElementById("registerForm").classList.add("hidden"); document.getElementById("tabLogin").classList.add("border-b-2","border-gold","font-bold"); document.getElementById("tabRegister").classList.remove("border-b-2","border-gold","font-bold"); });
+    document.getElementById("tabRegister").addEventListener("click",()=>{ document.getElementById("registerForm").classList.remove("hidden"); document.getElementById("loginForm").classList.add("hidden"); document.getElementById("tabRegister").classList.add("border-b-2","border-gold","font-bold"); document.getElementById("tabLogin").classList.remove("border-b-2","border-gold","font-bold"); });
+    initUserDB(); checkAutoLogin();
 </script>
 </body>
 </html>
